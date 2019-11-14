@@ -1,0 +1,153 @@
+﻿@*@using music.Models;*@
+@model music.Models.Song
+
+@{
+    ViewBag.Title = "DisplaySong";
+}
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+@*<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">*@
+
+<h2>DisplaySong</h2>
+<p>
+    @Html.ActionLink("Your Favourites", "DisplayFavouriteSong")
+</p>
+@ViewBag.Favourite
+@ViewBag.songs
+@using (Html.BeginForm("Search", "Songs", FormMethod.Post))
+{
+    <div>
+        Search by  
+                          @Html.TextBox("searchString")
+       @*<input id="Submit1" type="submit" value="Filter" />*@
+    </div>
+    }
+
+    <table id="dataTable11" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                @*<th>Play Audio</th>
+                    <th>Singer</th>*@
+                <th>icon</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            @if (ViewBag.Favourite != null)
+
+            {
+                foreach (var item in ViewBag.Favourite)
+                {
+
+                    <tr>
+                        <td>@item.SongId</td>
+                        <td>@item.name</td>
+
+                        <td>
+                         <audio controls>
+                             <source src="@Url.Content(@item.path)" type="audio/mp3">
+                             Your Browser don't support the audio tag
+                         </audio>
+                     </td>
+                    <td>@item.singer</td>
+                       
+                    </tr>
+
+                }
+            }
+            @*</tbody>
+        </table>
+
+
+        <table id="dataTable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Play Audio</th>
+                    <th>Singer</th>
+                    <th>icon</th>
+                </tr>
+
+            </thead>
+
+            <tbody>*@
+            @foreach (var item in ViewBag.songs)
+            {
+
+                <tr>
+                    <td>@item.SongId</td>
+                    <td>@item.name</td>
+
+                    <td>
+                        <audio controls>
+                            <source src="@Url.Content(@item.path)" type="audio/mp3">
+                            Your Browser don't support the audio tag
+                        </audio>
+                    </td>
+                    <td>@item.singer</td>
+                    <td>
+                        <i id="@item.SongId" class="far fa-heart" onclick=CallSendingForm("@item.name","@item.SongId")>
+
+                        </i>
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+    <script src="/Scripts/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery.validate.unobtrusive.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    function CallSendingForm(name1, sid1) {
+        console.log("hello")
+        var url = '@Url.Action("AddToFavourite", "Songs")' + '?SongName=' + name1 + "&SongId=" + sid1;
+            // My button is inside the form, if yours isn't just look for it your own way.
+            //var myForm = $(caller).parents("form");
+            //var data = $(myForm).serialize();
+            jQuery.ajax({
+                url: url,
+
+                success: function (data) {
+                    console.log('Returned data is: ' + data);
+                   // $("#"+data).removeClass(".far fa-heart")
+                    //$("#"+data).replaceClass(".fas fa-heart")
+                  //
+                  $("#"+data).replaceWith("<a href=@Url.Action("RemoveFavourite", "Songs")"+"?SongId="+data+"><i class='fas fa-heart' id="+data+"  ></i></a>")
+                }
+            });
+        }
+
+        @*function SearchMain(id) {
+            var d = id.value;
+            console.log(d)
+            var url = '@Url.Action("Search", "Songs")' + '?searchString=' + d;
+            // My button is inside the form, if yours isn't just look for it your own way.
+            //var myForm = $(caller).parents("form");
+            //var data = $(myForm).serialize();
+            jQuery.ajax({
+                url: url,
+
+                success: function (data) {
+                    console.log('Returned data is: '+data);
+                   // Window.location = "https://localhost:44316/Account/login";
+                    //Add your code here
+                }
+
+                //      jQuery(document).ready(function ($) {
+                //          $('#SearchImage').on('click', function () {
+                //            SearchMain();
+                //           });
+
+            });
+        }*@
+
+    </script>
