@@ -1,0 +1,229 @@
+
+@model IEnumerable<music.Models.Song>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@if ((String)TempData["Message"] != null)
+{
+    @TempData["Message"].ToString();
+
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<script src="~/scripts/jquery-3.3.1.min.js"></script>
+<script src="~/scripts/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" />
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+<script>
+
+    document.addEventListener('play', function (e) {
+        var audios = document.getElementsByTagName('audio');
+        for (var i = 0, len = audios.length; i < len; i++) {
+            if (audios[i] != e.target) {
+                audios[i].pause();
+            }
+
+
+
+
+        }
+    }, true);
+
+
+    document.addEventListener('ended', function (e) {
+        var audios = document.getElementsByTagName('audio');
+        for (var i = 0, len = audios.length; i < len; i++) {
+            if (audios[i] == e.target) {
+                if (i < len - 1)
+                    audios[i + 1].pause();
+                else
+                    audios[0].play();
+                break;
+            }
+
+
+        }
+    }, true);
+
+
+    document.activeElement('click', function (e) {
+        var audios = document.getElementsByTagName("audio");
+
+    })
+
+
+</script>
+<style>
+
+    .hovereffect {
+        width: 100%;
+        height: 100%;
+        float: left;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        cursor: default;
+    }
+
+        .hovereffect .overlay {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            background-color: rgba(0,0,0,0.6);
+            opacity: 0;
+            filter: alpha(opacity=0);
+            -webkit-transform: translate(460px, -100px) rotate(180deg);
+            -ms-transform: translate(460px, -100px) rotate(180deg);
+            transform: translate(460px, -100px) rotate(180deg);
+            -webkit-transition: all 0.2s 0.4s ease-in-out;
+            transition: all 0.2s 0.4s ease-in-out;
+        }
+
+        .hovereffect img {
+            display: block;
+            position: relative;
+            -webkit-transition: all 0.2s ease-in;
+            transition: all 0.2s ease-in;
+        }
+
+        .hovereffect h2 {
+            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            font-size: 17px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .hovereffect a.info {
+            display: inline-block;
+            text-decoration: none;
+            padding: 7px 14px;
+            text-transform: uppercase;
+            color: #fff;
+            border: 1px solid #fff;
+            margin: 50px 0 0 0;
+            background-color: transparent;
+            -webkit-transform: translateY(-200px);
+            -ms-transform: translateY(-200px);
+            transform: translateY(-200px);
+            -webkit-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+
+            .hovereffect a.info:hover {
+                box-shadow: 0 0 5px #fff;
+            }
+
+        .hovereffect:hover .overlay {
+            opacity: 1;
+            filter: alpha(opacity=100);
+            -webkit-transition-delay: 0s;
+            transition-delay: 0s;
+            -webkit-transform: translate(0px, 0px);
+            -ms-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+        }
+
+        .hovereffect:hover h2 {
+            -webkit-transform: translateY(0px);
+            -ms-transform: translateY(0px);
+            transform: translateY(0px);
+            -webkit-transition-delay: 0.5s;
+            transition-delay: 0.5s;
+        }
+
+        .hovereffect:hover a.info {
+            -webkit-transform: translateY(0px);
+            -ms-transform: translateY(5px);
+            transform: translateY(0px);
+            -webkit-transition-delay: 0.3s;
+            transition-delay: 0.3s;
+        }
+</style>
+
+<table class="table table-bordered table-striped table-hover" id="dataTable">
+    <tr>
+        <th>
+            Song
+
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.artist)
+        </th>
+        <th>
+            Play
+        </th>
+    </tr>
+    @{
+        int i = 0;
+
+    }
+
+    @foreach (var item in Model)
+    {
+
+        <tr>
+            <td>
+                <div class="hovereffect">
+                    <img class="img-responsive" name="@item.SongId" width="250" height="150" src="@Url.Content(@item.posterpath)" alt="">
+                    <div class="overlay">
+
+                        <h2>  @Html.DisplayFor(modelItem => item.name)</h2>
+                        @*<a class="info" href="#">
+                                <audio controls>
+                                    <source src="@Url.Content(@item.path)" type="audio/mp3">
+                                    Your Browser don't support the audio tag
+                                </audio>
+                            </a>*@
+
+                    </div>
+                </div>
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.artist)
+            </td>
+            <td>
+                <audio controls>
+                    <source src="@Url.Content(@item.path)" type="audio/mp3">
+                    Your Browser don't support the audio tag
+                </audio>
+
+
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.SongId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.SongId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.SongId })*@
+
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                @Html.ActionLink("AddtoPlaylist", "addtoPlaylist", new { id = item.SongId })
+            </td>
+            <td>
+
+                <button type="button" onclick="location.href='@Url.Action("getPlaylist", "Song")'">Playlist</button>
+
+            </td>
+            <td>
+                @ViewBag.lyrics
+            </td>
+        </tr>
+
+
+    }
+</table>
